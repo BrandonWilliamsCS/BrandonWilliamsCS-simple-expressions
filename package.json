@@ -1,0 +1,25 @@
+{
+  "name": "@brandonwilliamscs/simple-expressions",
+  "version": "0.1.0",
+  "description": "Parses and evaluates a limited expression language in the context of a json-like environment.",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "link": "copy package.json dist\\package.json && cd dist && npm link",
+    "test": "jest --watch"
+  },
+  "author": "Brandon Williams",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.5",
+    "typescript": "^4.7.3"
+  },
+  "prettier": {
+    "trailingComma": "all"
+  }
+}
