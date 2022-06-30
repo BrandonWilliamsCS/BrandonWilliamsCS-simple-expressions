@@ -1,6 +1,4 @@
 export class Iteration<T> {
-  private position = 0;
-
   public get atEnd() {
     return this.position >= this.items.length;
   }
@@ -12,9 +10,12 @@ export class Iteration<T> {
     return this.items[this.position];
   }
 
-  public constructor(public readonly items: ReadonlyArray<T>) {}
+  public constructor(
+    public readonly items: ReadonlyArray<T>,
+    public readonly position = 0,
+  ) {}
 
   public advance(count = 1) {
-    this.position += count;
+    return new Iteration(this.items, this.position + count);
   }
 }

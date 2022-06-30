@@ -3,7 +3,7 @@ import { StringToken, Token } from "./Token";
 
 export function tokenize(expressionString: string): Token[] {
   // Array.from treats complex characters (e.g., emojis) as one character where others split it.
-  const iteration = new Iteration(Array.from(expressionString));
+  let iteration = new Iteration(Array.from(expressionString));
   const tokens: Token[] = [];
   let currentAlphanum: string[] = [];
   while (!iteration.atEnd) {
@@ -21,13 +21,14 @@ export function tokenize(expressionString: string): Token[] {
     }
     if (isSymbol(currentChar)) {
       if (isStringDelimiter(currentChar)) {
-        const stringToken = consumeStringToken(iteration);
+        const [nextIteration, stringToken] = consumeStringToken(iteration);
+        iteration = nextIteration;
         tokens.push(stringToken);
       } else {
         tokens.push({ type: "symbol", value: currentChar });
       }
     }
-    iteration.advance();
+    iteration = iteration.advance();
   }
   // make sure any final alphanumeric sequence becomes a token
   if (currentAlphanum.length > 0) {
@@ -36,21 +37,26 @@ export function tokenize(expressionString: string): Token[] {
   return tokens;
 }
 
-function consumeStringToken(iteration: Iteration<string>): StringToken {
-  const delimiter = iteration.current;
+function consumeStringToken(
+  initialIteration: Iteration<string>,
+): [Iteration<string>, StringToken] {
+  const delimiter = initialIteration.current;
   const contentCharacters: string[] = [];
-  iteration.advance();
+  let iteration = initialIteration.advance();
   // Iterate up to, but not consuming, the closing delimiter.
   // That way the parent can advance beyond it.
   while (iteration.current !== delimiter) {
     if (iteration.current === "\\") {
       // Backslash escapes next character, so just advance to it
-      iteration.advance();
+      iteration = iteration.advance();
     }
     contentCharacters.push(iteration.current);
-    iteration.advance();
+    iteration = iteration.advance();
   }
-  return { type: "string", delimiter, content: contentCharacters.join("") };
+  return [
+    iteration,
+    { type: "string", delimiter, content: contentCharacters.join("") },
+  ];
 }
 
 function isAplhanum(char: string) {
