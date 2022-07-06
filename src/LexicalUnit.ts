@@ -28,9 +28,11 @@ export type NumericSequence = {
 
 export type Symbol =
   | CloseBracketSymbol
+  | CloseParenthesisSymbol
   | CommaSymbol
   | MinusSymbol
   | OpenBracketSymbol
+  | OpenParenthesisSymbol
   | PeriodSymbol
   | PlusSymbol;
 export type CommaSymbol = {
@@ -39,11 +41,17 @@ export type CommaSymbol = {
 export type CloseBracketSymbol = {
   type: "closeBracketSymbol";
 };
+export type CloseParenthesisSymbol = {
+  type: "closeParenthesisSymbol";
+};
 export type MinusSymbol = {
   type: "minusSymbol";
 };
 export type OpenBracketSymbol = {
   type: "openBracketSymbol";
+};
+export type OpenParenthesisSymbol = {
+  type: "openParenthesisSymbol";
 };
 export type PeriodSymbol = {
   type: "periodSymbol";

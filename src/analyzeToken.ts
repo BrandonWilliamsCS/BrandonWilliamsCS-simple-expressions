@@ -42,12 +42,16 @@ function analyzeSymbolToken(token: SymbolToken): LexicalUnit {
   switch (token.value) {
     case "]":
       return { type: "closeBracketSymbol" };
+    case ")":
+      return { type: "closeParenthesisSymbol" };
     case ",":
       return { type: "commaSymbol" };
     case "-":
       return { type: "minusSymbol" };
     case "[":
       return { type: "openBracketSymbol" };
+    case "(":
+      return { type: "openParenthesisSymbol" };
     case "+":
       return { type: "plusSymbol" };
     case ".":
