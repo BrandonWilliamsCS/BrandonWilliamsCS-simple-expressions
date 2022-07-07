@@ -1,10 +1,10 @@
 import { Iteration } from "./Iteration";
-import { StringToken, Token } from "./Token";
+import { StringUnit, LexicalUnit } from "./LexicalUnit";
 
-export function tokenize(expressionString: string): Token[] {
+export function splitLexicalUnits(expressionString: string): LexicalUnit[] {
   // Array.from treats complex characters (e.g., emojis) as one character where others split it.
   let iteration = new Iteration(Array.from(expressionString));
-  const tokens: Token[] = [];
+  const units: LexicalUnit[] = [];
   let currentAlphanum: string[] = [];
   while (!iteration.atEnd) {
     const currentChar = iteration.current;
@@ -16,30 +16,30 @@ export function tokenize(expressionString: string): Token[] {
       currentAlphanum.push(currentChar);
     } else if (currentAlphanum.length > 0) {
       // non-alphanumeric characters end any current alphanumeric sequence
-      tokens.push({ type: "alphanumeric", value: currentAlphanum.join("") });
+      units.push({ kind: "alphanumeric", value: currentAlphanum.join("") });
       currentAlphanum = [];
     }
     if (isSymbol(currentChar)) {
       if (isStringDelimiter(currentChar)) {
-        const [nextIteration, stringToken] = consumeStringToken(iteration);
+        const [nextIteration, stringLexicalUnit] = consumeStringUnit(iteration);
         iteration = nextIteration;
-        tokens.push(stringToken);
+        units.push(stringLexicalUnit);
       } else {
-        tokens.push({ type: "symbol", value: currentChar });
+        units.push({ kind: "symbol", value: currentChar });
       }
     }
     iteration = iteration.advance();
   }
   // make sure any final alphanumeric sequence becomes a token
   if (currentAlphanum.length > 0) {
-    tokens.push({ type: "alphanumeric", value: currentAlphanum.join("") });
+    units.push({ kind: "alphanumeric", value: currentAlphanum.join("") });
   }
-  return tokens;
+  return units;
 }
 
-function consumeStringToken(
+function consumeStringUnit(
   initialIteration: Iteration<string>,
-): [Iteration<string>, StringToken] {
+): [Iteration<string>, StringUnit] {
   const delimiter = initialIteration.current;
   const contentCharacters: string[] = [];
   let iteration = initialIteration.advance();
@@ -55,7 +55,7 @@ function consumeStringToken(
   }
   return [
     iteration,
-    { type: "string", delimiter, content: contentCharacters.join("") },
+    { kind: "string", delimiter, content: contentCharacters.join("") },
   ];
 }
 

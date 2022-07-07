@@ -1,55 +1,55 @@
-import { tokenize } from "./tokenize";
+import { splitLexicalUnits } from "./splitLexicalUnits";
 
-describe("tokenize", () => {
-  it("produces no token for an empty string", () => {
+describe("splitLexicalUnits", () => {
+  it("produces no unit for an empty string", () => {
     // Arrange
     const input = "";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens.length).toBe(0);
+    expect(units.length).toBe(0);
   });
-  it("recognizes letters and numbers as an alphanumeric token", () => {
+  it("recognizes letters and numbers as an alphanumeric unit", () => {
     // Arrange
     const input = "hello123";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens[0]).toEqual({ type: "alphanumeric", value: "hello123" });
+    expect(units[0]).toEqual({ kind: "alphanumeric", value: "hello123" });
   });
   it("treats underscore character as alphanumeric", () => {
     // Arrange
     const input = "hello_123";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens[0]).toEqual({ type: "alphanumeric", value: "hello_123" });
+    expect(units[0]).toEqual({ kind: "alphanumeric", value: "hello_123" });
   });
   it("splits alphanumeric at whitespace", () => {
     // Arrange
     const input = "hello\t123";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens).toEqual([
-      { type: "alphanumeric", value: "hello" },
-      { type: "alphanumeric", value: "123" },
+    expect(units).toEqual([
+      { kind: "alphanumeric", value: "hello" },
+      { kind: "alphanumeric", value: "123" },
     ]);
   });
-  it("recognizes a symbol as a symbol token", () => {
+  it("recognizes a symbol as a symbol unit", () => {
     // Arrange
     const input = ".";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens[0]).toEqual({ type: "symbol", value: "." });
+    expect(units[0]).toEqual({ kind: "symbol", value: "." });
   });
   it("rejects control characters outside of string literals", () => {
     // Arrange
     const input = "\u0000";
     // Act
     const act = () => {
-      const tokens = tokenize(input);
+      const units = splitLexicalUnits(input);
     };
     // Assert
     expect(act).toThrow();
@@ -58,10 +58,10 @@ describe("tokenize", () => {
     // Arrange
     const input = '"\'hello\'\\\\\\"world\\""';
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens[0]).toEqual({
-      type: "string",
+    expect(units[0]).toEqual({
+      kind: "string",
       delimiter: '"',
       content: "'hello'\\\"world\"",
     });
@@ -70,10 +70,10 @@ describe("tokenize", () => {
     // Arrange
     const input = "'\\'hello\\'\\\\\"world\"'";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens[0]).toEqual({
-      type: "string",
+    expect(units[0]).toEqual({
+      kind: "string",
       delimiter: "'",
       content: "'hello'\\\"world\"",
     });
@@ -82,75 +82,75 @@ describe("tokenize", () => {
     // Arrange
     const input = "'\thello! 👋\r\n'";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens[0]).toEqual({
-      type: "string",
+    expect(units[0]).toEqual({
+      kind: "string",
       delimiter: "'",
       content: "\thello! 👋\r\n",
     });
   });
-  it("ignores whitespace outside between tokens", () => {
+  it("ignores whitespace outside between units", () => {
     // Arrange
     const input = "hello - ' + ' - 123";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens).toEqual([
-      { type: "alphanumeric", value: "hello" },
-      { type: "symbol", value: "-" },
-      { type: "string", delimiter: "'", content: " + " },
-      { type: "symbol", value: "-" },
-      { type: "alphanumeric", value: "123" },
+    expect(units).toEqual([
+      { kind: "alphanumeric", value: "hello" },
+      { kind: "symbol", value: "-" },
+      { kind: "string", delimiter: "'", content: " + " },
+      { kind: "symbol", value: "-" },
+      { kind: "alphanumeric", value: "123" },
     ]);
   });
-  it("includes all tokens for complex input strings", () => {
+  it("includes all units for complex input strings", () => {
     // Arrange
     const input = "concat(')', '👋', name, 7)";
     // Act
-    const tokens = tokenize(input);
+    const units = splitLexicalUnits(input);
     // Assert
-    expect(tokens).toEqual([
+    expect(units).toEqual([
       {
-        type: "alphanumeric",
+        kind: "alphanumeric",
         value: "concat",
       },
       {
-        type: "symbol",
+        kind: "symbol",
         value: "(",
       },
       {
-        type: "string",
+        kind: "string",
         delimiter: "'",
         content: ")",
       },
       {
-        type: "symbol",
+        kind: "symbol",
         value: ",",
       },
       {
-        type: "string",
+        kind: "string",
         delimiter: "'",
         content: "👋",
       },
       {
-        type: "symbol",
+        kind: "symbol",
         value: ",",
       },
       {
-        type: "alphanumeric",
+        kind: "alphanumeric",
         value: "name",
       },
       {
-        type: "symbol",
+        kind: "symbol",
         value: ",",
       },
       {
-        type: "alphanumeric",
+        kind: "alphanumeric",
         value: "7",
       },
       {
-        type: "symbol",
+        kind: "symbol",
         value: ")",
       },
     ]);
