@@ -8,7 +8,7 @@ describe("analyzeLexicalUnit", () => {
     // Act
     const token = analyzeLexicalUnit(unit);
     // Assert
-    expect(token).toEqual({ kind: "identifier", value: "abc_123" });
+    expect(token).toEqual({ kind: "identifierToken", value: "abc_123" });
   });
   it("recognizes an alphanumeric token starting with an underscore as an identifier", () => {
     // Arrange
@@ -16,7 +16,7 @@ describe("analyzeLexicalUnit", () => {
     // Act
     const token = analyzeLexicalUnit(unit);
     // Assert
-    expect(token).toEqual({ kind: "identifier", value: "_abc123" });
+    expect(token).toEqual({ kind: "identifierToken", value: "_abc123" });
   });
   it("rejects an alphanumeric token starting with a number when not entirely numeric", () => {
     // Arrange
@@ -34,7 +34,7 @@ describe("analyzeLexicalUnit", () => {
     // Act
     const token = analyzeLexicalUnit(unit);
     // Assert
-    expect(token).toEqual({ kind: "digitSequence", value: "123" });
+    expect(token).toEqual({ kind: "digitSequenceToken", value: "123" });
   });
   it("recognizes the 'false' special token as a literal", () => {
     // Arrange
@@ -42,7 +42,7 @@ describe("analyzeLexicalUnit", () => {
     // Act
     const token = analyzeLexicalUnit(unit);
     // Assert
-    expect(token).toEqual({ kind: "falseLiteral" });
+    expect(token).toEqual({ kind: "falseLiteralToken" });
   });
   it("recognizes the 'null' special token as a literal", () => {
     // Arrange
@@ -50,7 +50,7 @@ describe("analyzeLexicalUnit", () => {
     // Act
     const token = analyzeLexicalUnit(unit);
     // Assert
-    expect(token).toEqual({ kind: "nullLiteral" });
+    expect(token).toEqual({ kind: "nullLiteralToken" });
   });
   it("recognizes the 'true' special token as a literal", () => {
     // Arrange
@@ -58,7 +58,7 @@ describe("analyzeLexicalUnit", () => {
     // Act
     const token = analyzeLexicalUnit(unit);
     // Assert
-    expect(token).toEqual({ kind: "trueLiteral" });
+    expect(token).toEqual({ kind: "trueLiteralToken" });
   });
   it("recognizes a valid symbol token", () => {
     // Arrange

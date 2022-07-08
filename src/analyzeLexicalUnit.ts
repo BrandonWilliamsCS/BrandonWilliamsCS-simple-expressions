@@ -20,24 +20,24 @@ export function analyzeLexicalUnit(token: LexicalUnit): Token {
 function analyzeAlphanumericUnit(token: AlphanumericUnit): Token {
   switch (token.value) {
     case "false":
-      return { kind: "falseLiteral" };
+      return { kind: "falseLiteralToken" };
     case "null":
-      return { kind: "nullLiteral" };
+      return { kind: "nullLiteralToken" };
     case "true":
-      return { kind: "trueLiteral" };
+      return { kind: "trueLiteralToken" };
   }
   if (/^\d+$/.test(token.value)) {
-    return { kind: "digitSequence", value: token.value };
+    return { kind: "digitSequenceToken", value: token.value };
   }
   if (/^\d+$/.test(token.value[0])) {
     throw new Error("Identifier may not start with number");
   }
-  return { kind: "identifier", value: token.value };
+  return { kind: "identifierToken", value: token.value };
 }
 
 function analyzeStringUnit(token: StringUnit): Token {
   return {
-    kind: "stringLiteral",
+    kind: "stringLiteralToken",
     delimiter: token.delimiter,
     content: token.content,
   };

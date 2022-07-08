@@ -5,7 +5,7 @@ export type Token =
   | SymbolToken;
 
 export type IdentifierToken = {
-  kind: "identifier";
+  kind: "identifierToken";
   value: string;
 };
 
@@ -15,22 +15,22 @@ export type LiteralToken =
   | StringLiteral
   | TrueLiteral;
 export type FalseLiteral = {
-  kind: "falseLiteral";
+  kind: "falseLiteralToken";
 };
 export type NullLiteral = {
-  kind: "nullLiteral";
+  kind: "nullLiteralToken";
 };
 export type StringLiteral = {
-  kind: "stringLiteral";
+  kind: "stringLiteralToken";
   content: string;
   delimiter: string;
 };
 export type TrueLiteral = {
-  kind: "trueLiteral";
+  kind: "trueLiteralToken";
 };
 
 export type DigitSequenceToken = {
-  kind: "digitSequence";
+  kind: "digitSequenceToken";
   value: string;
 };
 
